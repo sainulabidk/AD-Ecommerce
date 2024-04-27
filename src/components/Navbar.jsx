@@ -35,7 +35,7 @@ const Navbar = () => {
     try {
       await axios.get("/logout");
       dispatch(signout());
-      Navigate("/");
+      navigate("/");
       toast.warning("logout Success!", { position: "top-center" });
     } catch (error) {
       console.log(error);
