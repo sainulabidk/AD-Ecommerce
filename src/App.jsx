@@ -6,7 +6,7 @@ import SingleProductPage from './pages/SingleProductPage';
 import SignInPage from './pages/SignInPage';
 import SignupPage from './pages/SignupPage';
 import axios from "axios";
-import TestingPage from './pages/TestingPage';
+import Verification from './pages/Verification';
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = "http://localhost:5000/api/v1";
 
@@ -19,7 +19,7 @@ const App = () => {
       <Route path="/sign-in" element={<SignInPage/>} />
       <Route path="/sign-up" element={<SignupPage/>} />
       <Route path="/product/:id" element={<SingleProductPage/>} />
-      <Route path="/test/:id/:id2" element={<TestingPage/>} />
+      <Route path="/verify-email/:id" element={<Verification/>} />
     </Routes>
   </BrowserRouter>
   )
