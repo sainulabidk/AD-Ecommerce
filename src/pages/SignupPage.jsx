@@ -22,7 +22,7 @@ const SignupPage = () => {
     try {
       await axios.post("/sign-up", formData);
       setLoading(false);
-      toast.success('Please Verify your Email');
+      toast.success('Please Verify your Email',{position:"top-center"});
       navigate('/sign-in')
     } catch (error) {
       setError(error);

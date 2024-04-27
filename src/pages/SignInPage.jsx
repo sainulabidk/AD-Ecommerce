@@ -23,7 +23,7 @@ const SignInPage = () => {
       dispatch(signInStart());
       const { data } = await axios.post("/sign-in", formData);
       dispatch(signInSuccess(data));
-      toast.success('SignIn successful!');
+      toast.success('SignIn successful!',{position:"top-center"});
       navigate("/");
     } catch (error) {
       dispatch(signInFail(error));

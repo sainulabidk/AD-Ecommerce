@@ -115,7 +115,6 @@ export default function SingleProductPage() {
             <h2 className="sr-only">Product information</h2>
             <p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
 
-            {/* Reviews */}
           
 
             <form className="mt-10">
