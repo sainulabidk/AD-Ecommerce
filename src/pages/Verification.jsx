@@ -12,9 +12,11 @@ const Verification = () => {
   useEffect(() => {
     const handleVerification = async () => {
       try {
-        await axios.post("/verify-email", { _id: id });
+       const {data} = await axios.post("/verify-email", { _id: id });
+          if(data){
           toast.success("Email Verified please Login now!!", { position: "top-center" });
           navigate('/sign-in');
+          }
       } catch (error) {
         console.log(error);
         toast.warning("Already Signed Up and this link is expired",{ position: "top-center" });
