@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaCartArrowDown, FaTimes } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { signout } from "../redux/userSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
-import logo from "../assets/logo.png"
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -45,7 +45,7 @@ const Navbar = () => {
   return (
     <header
       className={`flex w-full items-center ${
-        scrolled ? "bg-opacity-75 bg-zinc-100" : "bg-zinc-50 shadow-sm"
+        scrolled ? "bg-opacity-65 bg-zinc-100 backdrop-blur-sm" : "bg-zinc-50 shadow-sm"
       } p-4 fixed z-50 px-10 transition-colors duration-300`}
     >
       <div className="container">
@@ -104,17 +104,37 @@ const Navbar = () => {
                 </div>
 
                 <ul className="block lg:flex">
-                  <ListItem NavLink="/#">Home</ListItem>
-                  <ListItem NavLink="/#">Profile</ListItem>
-                  <ListItem NavLink="/#">My-Orders</ListItem>
-                  <ListItem NavLink="/#">Other</ListItem>
+                  {currentUser && (
+                    <>
+                      <Link to={"/"}>
+                        <ListItem>Home</ListItem>
+                      </Link>
+                      <Link to={"/profile"}>
+                        <ListItem>Profile</ListItem>
+                      </Link>
+                      <ListItem NavLink="/#">My-Orders</ListItem>
+                     <Link to={'/'}> <ListItem><FaCartArrowDown size={26} className="text-red-700 mx-1"/>
+                       Cart</ListItem></Link>
+                    </>
+                  )}
+                  {currentUser && currentUser.role === "Admin" ? (
+                    <Link to={"/admin"}>
+                      <ListItem>Dashboard</ListItem>
+                    </Link>
+                  ) : currentUser && currentUser.role === "Agent" ? (
+                    <Link to={"/agent"}>
+                      <ListItem>Agent-Dashboard</ListItem>
+                    </Link>
+                  ) : (
+                    null
+                  )}
                 </ul>
               </nav>
             </div>
             <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
               {currentUser ? (
                 <>
-                  <h1 className="px-7 py-3 text-xl font-medium text-dark hover:text-gray-950 text-gray-900">
+                  <h1 className="px-7 py-2 text-xl font-medium text-dark hover:text-gray-950 text-gray-900">
                     Hello, {currentUser.firstName}
                   </h1>
                   <button
@@ -154,7 +174,8 @@ export default Navbar;
 const ListItem = ({ children }) => {
   return (
     <>
-      <li className="flex py-2 text-xl font-medium text-gray-600 hover:text-gray-950 lg:ml-12 lg:inline-flex">
+      <li className={`flex py-2 text-xl font-semibold text-darker-gray
+       hover:text-gray-950 lg:ml-12 lg:inline-flex `}>
         {children}
       </li>
     </>

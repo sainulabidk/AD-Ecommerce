@@ -19,7 +19,7 @@ const Verification = () => {
           }
       } catch (error) {
         console.log(error);
-        toast.warning("Already Signed Up and this link is expired",{ position: "top-center" });
+        toast.error("Already Signed Up and this link is expired",{ position: "top-center" });
         navigate('/');
       }
     };

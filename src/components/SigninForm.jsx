@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import OAuthGoogle from './OAuthGoogle'
+
 
 export default function SigninForm({error ,loading,onHandleChange,handleSubmit}) {
   return (
@@ -52,7 +54,7 @@ export default function SigninForm({error ,loading,onHandleChange,handleSubmit})
         </button>
       </div>
     </form>
-
+    <OAuthGoogle/>
     {/* Error message */}
     {error && (
       <p className="mt-4 text-sm text-red-600">
