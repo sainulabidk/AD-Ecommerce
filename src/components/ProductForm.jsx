@@ -3,38 +3,47 @@ import React, { useEffect, useState } from "react";
 import { FaCloudUploadAlt, FaStar, FaTrash } from "react-icons/fa";
 
 const ProductForm = ({
-  productName,description,category,price,
-  inventory,handleFileChange,availability,
-  onFieldChange,onSubmit,images,
+  productId,
+  productName,
+  description,
+  category,
+  price,
+  inventory,
+  handleFileChange,
+  availability,
+  onFieldChange,
+  onSubmit,
+  images,
 }) => {
-    const [categories, setCategories] = useState([]);
-    useEffect(() => {
-     fetchCategory()
-    }, [])
-    
-    function fetchCategory() {
-        axios.get("/todos").then((res) => {
-          setCategories(res.data);
-        });
-      }
-      const handleDelete = (index) => {
-        const newImages = [...images];
-        newImages.splice(index, 1);
-        onFieldChange("images", newImages);
-      };
-    
-      const handlePin = (index) => {
-        const newImages = [...images];
-        const pinnedImage = newImages.splice(index, 1)[0];
-        newImages.unshift(pinnedImage);
-        onFieldChange("images", newImages);
-      };
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  function fetchCategory() {
+    axios.get("/todos").then((res) => {
+      setCategories(res.data);
+    });
+  }
+  const handleDelete = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    onFieldChange("images", newImages);
+  };
+
+  const handlePin = (index) => {
+    const newImages = [...images];
+    const pinnedImage = newImages.splice(index, 1)[0];
+    newImages.unshift(pinnedImage);
+    onFieldChange("images", newImages);
+  };
   return (
-    <form className="w-full max-w-6xl mx-auto shadow-lg mb-4 pb-5 bg-gray-50 padding-x mt-6 " onSubmit={onSubmit}>
+    <form
+      className="w-full max-w-6xl mx-auto shadow-lg mb-4 pb-5 bg-gray-50 padding-x mt-6 "
+      onSubmit={onSubmit}
+    >
       <div className="mb-4">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-        >
+        <label className="block text-gray-700 text-sm font-bold mb-2">
           Product Name
         </label>
         <input
@@ -44,7 +53,6 @@ const ProductForm = ({
           placeholder="Enter product name"
           value={productName}
           onChange={(e) => onFieldChange("productName", e.target.value)}
-         
         />
       </div>
       <div className="mb-4">
@@ -61,7 +69,6 @@ const ProductForm = ({
           placeholder="Enter product description"
           value={description}
           onChange={(e) => onFieldChange("description", e.target.value)}
-          
         />
       </div>
       <div className="mb-4">
@@ -70,13 +77,13 @@ const ProductForm = ({
           id="category"
           value={category}
           onChange={(e) => onFieldChange("category", e.target.value)}
-          
         >
-        <option value={""}>select category</option>
-          {categories.map((item)=>(
-            <option key={item._id} value={item.categories}>{item.categories}</option>
+          <option value={""}>select category</option>
+          {categories.map((item) => (
+            <option key={item._id} value={item.categories}>
+              {item.categories}
+            </option>
           ))}
-          
         </select>
       </div>
       <div className="mb-4">
@@ -87,13 +94,12 @@ const ProductForm = ({
           Price
         </label>
         <input
-          className="shadow appearance-none border rounded-md w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow removAarrow border rounded-md w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           id="price"
           type="number"
           placeholder="Enter product price"
           value={price}
           onChange={(e) => onFieldChange("price", e.target.value)}
-          
         />
       </div>
       <div className="mb-4">
@@ -124,15 +130,16 @@ const ProductForm = ({
               <div key={index} className="relative h-32 w-32 m-2">
                 <div className="bg-white rounded-md-lg overflow-hidden shadow-md aspect-w-1 aspect-h-1">
                   <img
-                    className="w-32 h-32 object-cover"
+                    className="w-32 h-32 object-contain"
                     src={image}
                     alt="image"
                   />
                 </div>
                 <div className="absolute bottom-0 right-0 flex gap-2 p-2">
                   <button
+                  type="button"
                     onClick={() => handlePin(index)}
-                    className="bg-primary bg-opacity-40 p-2 rounded-full"
+                    className="bg-primary bg-opacity-40 btnHover p-2 rounded-full"
                   >
                     <FaStar />
                   </button>
@@ -140,7 +147,7 @@ const ProductForm = ({
                     onClick={() => handleDelete(index)}
                     className="bg-primary bg-opacity-40 btnHover text-red-800 p-2 rounded-full"
                   >
-                    <FaTrash size={14}/>
+                    <FaTrash size={14} />
                   </button>
                 </div>
               </div>
@@ -156,14 +163,13 @@ const ProductForm = ({
           Inventory
         </label>
         <input
-          className="shadow appearance-none border rounded-md w-full py-3 px-3
-           text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          className="shadow removAarrow border rounded-md w-full py-3 px-3
+           text-gray-700 leading-tight focus:outline-none focus:shadow-outline "
           id="inventory"
           type="number"
           placeholder="Enter product inventory"
           value={inventory}
           onChange={(e) => onFieldChange("inventory", e.target.value)}
-          
         />
       </div>
       <div className="mb-4">
@@ -178,19 +184,18 @@ const ProductForm = ({
           id="availability"
           value={availability}
           onChange={(e) => onFieldChange("availability", e.target.value)}
-          
         >
-          <option value="">Select availability</option>
-          <option value="in-stock">In Stock</option>
-          <option value="out-of-stock">Out of Stock</option>
+          <option className={`${productId ?"hidden":"block"}`} value="">select availability</option>
+          <option value="In stock">In Stock</option>
+          <option value="Out of stock">Out of Stock</option>
         </select>
       </div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center">
         <button
-          className="bg-darker-gray hover:bg-darker-gray-medium text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:shadow-outline"
+          className="bg-darker-gray hover:bg-darker-gray-medium text-white font-bold py-3 px-8 rounded-md focus:outline-none focus:shadow-outline"
           type="submit"
         >
-          Add Product
+          {productId?"Update":"Add Product"}
         </button>
       </div>
     </form>

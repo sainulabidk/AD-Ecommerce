@@ -13,30 +13,35 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isAgent, setIsAgent] = useState();
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.pageYOffset;
-      if (scrollTop > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      setScrolled(scrollTop > 50);
+    };
+
+    const fetchUserRole = async () => {
+      try {
+        const response = await axios.get(`/agent/${currentUser._id}`);
+        setIsAgent(response.data.role === "Agent");
+      } catch (error) {
+        console.error('Error fetching user role:', error);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
+    fetchUserRole();
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [currentUser]);
 
   const handleSignout = async () => {
     try {
       await axios.get("/logout");
       dispatch(signout());
       navigate("/");
-      toast.warning("logout Success!", { position: "top-center" });
+      toast.warning("Logout Success!", { position: "top-center" });
     } catch (error) {
       console.log(error);
     }
@@ -45,32 +50,26 @@ const Navbar = () => {
   return (
     <header
       className={`flex w-full items-center ${
-        scrolled ? "bg-opacity-65 bg-zinc-100 backdrop-blur-sm" : "bg-zinc-50 shadow-sm"
+        scrolled ? "bg-opacity-65 bg-zinc-100 backdrop-blur-sm" : "bg-zinc-50 bg-opacity-90 backdrop-blur-sm shadow-sm"
       } p-4 fixed z-50 px-10 transition-colors duration-300`}
     >
-      <div className="container">
+      <div className="container mx-auto">
         <div className="relative -mx-4 flex items-center justify-between">
           <div className="w-60 max-w-full px-4">
             <Link to={"/"} className="block w-full py-5">
-              <img
-                src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-primary.svg"
-                alt="logo"
-                className=""
-              />
+              <img src="https://cdn.tailgrids.com/2.0/image/assets/images/logo/logo-primary.svg" alt="logo" className="w-full" />
             </Link>
           </div>
           <div className="flex w-full items-center justify-between px-4">
             <div>
               {open ? (
-                <>
-                  <button
-                    onClick={() => setOpen(false)}
-                    id="navbarClose"
-                    className="navbarTogglerActive absolute right-4 top-1/2 block -translate-y-1/2 rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
-                  >
-                    <FaTimes size={22} />
-                  </button>
-                </>
+                <button
+                  onClick={() => setOpen(false)}
+                  id="navbarClose"
+                  className="navbarTogglerActive absolute right-4 top-1/2 block -translate-y-1/2 rounded-lg px-3 py-[6px] ring-primary focus:ring-2 lg:hidden"
+                >
+                  <FaTimes size={22} />
+                </button>
               ) : (
                 <button
                   onClick={() => setOpen(true)}
@@ -93,12 +92,12 @@ const Navbar = () => {
                     </h1>
                   ) : (
                     <div className="flex gap-2 text-slate-50 font-semibold">
-                      <button className="bg-darker-gray px-2 py-2 btnHover rounded-md">
+                      <Link to="/sign-up" className="bg-darker-gray px-2 py-2 btnHover rounded-md">
                         SignUp
-                      </button>
-                      <button className="bg-darker-blue px-2 py-2 btnHover rounded-md">
+                      </Link>
+                      <Link to="/sign-in" className="bg-darker-blue px-2 py-2 btnHover rounded-md">
                         SignIn
-                      </button>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -112,21 +111,24 @@ const Navbar = () => {
                       <Link to={"/profile"}>
                         <ListItem>Profile</ListItem>
                       </Link>
-                      <ListItem NavLink="/#">My-Orders</ListItem>
-                     <Link to={'/'}> <ListItem><FaCartArrowDown size={26} className="text-red-700 mx-1"/>
-                       Cart</ListItem></Link>
+                      <ListItem>My-Orders</ListItem>
+                      <Link className="sm:hidden" to={'/'}>
+                        <ListItem>
+                          <FaCartArrowDown size={26} className="text-red-700 mx-1"/>
+                          Cart
+                        </ListItem>
+                      </Link>
                     </>
                   )}
-                  {currentUser && currentUser.role === "Admin" ? (
+                  {currentUser && currentUser.role === "Admin" && (
                     <Link to={"/admin"}>
                       <ListItem>Dashboard</ListItem>
                     </Link>
-                  ) : currentUser && currentUser.role === "Agent" ? (
-                    <Link to={"/agent"}>
+                  )}
+                  {isAgent && (
+                    <Link to={"/agent-main"}>
                       <ListItem>Agent-Dashboard</ListItem>
                     </Link>
-                  ) : (
-                    null
                   )}
                 </ul>
               </nav>
@@ -134,6 +136,12 @@ const Navbar = () => {
             <div className="hidden justify-end pr-16 sm:flex lg:pr-0">
               {currentUser ? (
                 <>
+                 <Link to={'/'}>
+                        <ListItem>
+                          <FaCartArrowDown size={32} className="text-red-700 mx-1"/>
+                         
+                        </ListItem>
+                      </Link>
                   <h1 className="px-7 py-2 text-xl font-medium text-dark hover:text-gray-950 text-gray-900">
                     Hello, {currentUser.firstName}
                   </h1>
@@ -143,6 +151,7 @@ const Navbar = () => {
                   >
                     Signout
                   </button>
+                 
                 </>
               ) : (
                 <>
@@ -173,11 +182,8 @@ export default Navbar;
 
 const ListItem = ({ children }) => {
   return (
-    <>
-      <li className={`flex py-2 text-xl font-semibold text-darker-gray
-       hover:text-gray-950 lg:ml-12 lg:inline-flex `}>
-        {children}
-      </li>
-    </>
+    <li className={`flex py-2 text-xl font-semibold text-darker-gray hover:text-gray-950 lg:ml-12 lg:inline-flex`}>
+      {children}
+    </li>
   );
 };

@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { Link, useLocation } from "react-router-dom"; // Import Link
+import { Link, useLocation, useNavigate } from "react-router-dom"; // Import Link
 import { FaArrowLeft } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 
@@ -12,11 +12,9 @@ const user = {
     "https://cdn3d.iconscout.com/3d/premium/thumb/administrator-6853609-5625724.png?f=webp",
 };
 const navigation = [
-  { name: "Home", href: "/admin", current: true },
-  { name: "Add-Category", href: "/admin-add-category", current: false },
-  { name: "Add-Products", href: "/admin-add-products", current: false },
-  { name: "All-Orders", href: "/admin-all-orders", current: false },
-  { name: "Reports", href: "#", current: false },
+  { name: "Users", href: "/agent-main", current: true },
+  { name: "Agent comission", href: "/agent-commision", current: false },
+
 ];
 const userNavigation = [
   { name: "Your Profile", href: "#" },
@@ -28,12 +26,16 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function AdminNavbar() {
+export default function AgentNavbar() {
+  const navigate = useNavigate()
   const loaction = useLocation();
+  const goBack = () => {
+    navigate(-1)
+  };
   return (
     <div className="">
       <div className="min-h-full">
-        <Disclosure as="nav" className="bg-gray-800 py-3">
+        <Disclosure as="nav" className="bg-darker-gray py-3">
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -187,22 +189,23 @@ export default function AdminNavbar() {
           )}
         </Disclosure>
 
-        <header className="bg-gray-700 shadow">
+        <header className="bg-gray-300 shadow">
           <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
             <h1
-              className="sm:text-3xl text-2xl font-bold  text-secondary
+              className="sm:text-3xl text-2xl font-bold  text-darker-gray
             flex items-center gap-2 mb-6"
             >
               Dashboard <MdDashboard />
             </h1>
-            <Link to={"/"}>
+           
               <button
+              onClick={goBack}
                 className="bg-darker-blue text-primary px-2 rounded-lg font-semibold py-1 btnHover
             gap-2 mb-2 flex justify-center items-center"
               >
                 <FaArrowLeft /> Back
               </button>
-            </Link>
+           
           </div>
         </header>
       </div>

@@ -58,6 +58,9 @@
   .Activetabs {
     @apply bg-coral-blue text-gray-50 px-5 py-2 rounded-3xl mr-2 btnHover text-lg;
   }
+  .removAarrow{
+    @apply [&::-webkit-inner-spin-button]:appearance-none [appearance:textfield]
+  }
   
   
   @media (max-width: 640px) {
@@ -81,6 +84,20 @@
   
   .animate-heroMove {
     animation: heroMove 3s infinite;
+  }
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  
+  .animate-marquee {
+    display: inline-block;
+    min-width: 100%;
+    animation: marquee 18s linear infinite;
   }
   
   

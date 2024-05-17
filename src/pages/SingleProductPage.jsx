@@ -1,159 +1,157 @@
+import { useState, useEffect } from "react";
+import { FaCartArrowDown } from "react-icons/fa";
+import RelatedProducts from "../components/shared/RelatedProducts";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
-const product = {
-  name: 'Product Name',
-  price: '$192',
-  
-  breadcrumbs: [
-    { id: 1, name: 'Men', },
-    { id: 2, name: 'Clothing', },
-  ],
-  images: [ 
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
-      alt: 'Two each of gray, white, and black shirts laying flat.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
-      alt: 'Model wearing plain black basic tee.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
-      alt: 'Model wearing plain gray basic tee.',
-    },
-    {
-      src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
-      alt: 'Model wearing plain white basic tee.',
-    },
-  ],
-  colors: [
-    { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-    { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-    { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-  ],
-  sizes: [
-    { name: 'XXS', inStock: false },
-    { name: 'XS', inStock: true },
-    { name: 'S', inStock: true },
-    { name: 'M', inStock: true },
-    { name: 'L', inStock: true },
-    { name: 'XL', inStock: true },
-    { name: '2XL', inStock: true },
-    { name: '3XL', inStock: true },
-  ],
-  description:
-    'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.',
-  highlights: [
-    'Hand cut and sewn locally',
-    'Dyed with our proprietary colors',
-    'Pre-washed & pre-shrunk',
-    'Ultra-soft 100% cotton',
-  ],
-  details:
-    'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.',
-}
+export default function SingleProductPage({ item }) {
+  const { id } = useParams();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [singleProduct, setSingleProduct] = useState(null);
 
+  useEffect(() => {
+    fetchProducts();
+  }, [id]);
 
-export default function SingleProductPage() {
- 
+  const fetchProducts = async () => {
+    try {
+      const { data } = await axios.get(`/products/${id}`);
+      setSingleProduct(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
+  };
+
+  const product = singleProduct || item;
+
+  // Check if product is defined and has images
+  if (!product || !product.images || product.images.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="bg-white pt-32">
       <div className="pt-6">
+        {/* Breadcrumb */}
         <nav aria-label="Breadcrumb">
-          <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-              < >
-                <div className="flex items-center">
-                  <li className="mr-2 text-sm font-medium text-gray-900">
-                    Category Name
-                  </li>
-                </div>
-              </>  
+          <ol
+            role="list"
+            className="mx-auto flex max-w-7xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8"
+          >
+            <li className="mr-2 text-sm font-medium text-gray-900">
+              <a href="#" className="hover:text-indigo-600">
+                {product?.category}
+              </a>
+            </li>
           </ol>
         </nav>
 
-        {/* Image gallery */}
-        <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
-          <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
-            <img
-              src={product.images[0].src}
-              alt={product.images[0].alt}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-          <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
-            <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
+        {/* Product details and carousel */}
+        <div className="mx-auto mt-6 max-w-7xl sm:px-6 lg:px-8 flex flex-col lg:flex-row">
+          {/* Thumbnails */}
+          <div className="mt-4 hidden sm:block md:flex justify-center mb-3 lg:flex-col w-full lg:w-1/6 relative space-y-2">
+            {product.images.map((image, index) => (
               <img
-                src={product.images[1].src}
-                alt={product.images[1].alt}
-                className="h-full w-full object-cover object-center"
+                key={index}
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                onClick={() => handleImageClick(index)}
+                className={`w-20 h-20 object-contain rounded-lg cursor-pointer ${
+                  index === selectedImageIndex ? "border-2 border-indigo-600" : ""
+                }`}
               />
-            </div>
-            <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
+            ))}
+          </div>
+          {/* Carousel */}
+          <div className="w-full lg:w-1/2 relative">
+            <div className="relative">
               <img
-                src={product.images[2].src}
-                alt={product.images[2].alt}
-                className="h-full w-full object-cover object-center"
+                src={product.images[selectedImageIndex]}
+                alt={`Image ${selectedImageIndex + 1}`}
+                className="w-full h-[300px] object-contain sm:h-[500px] rounded-lg shadow-lg sm:rounded-xl"
               />
-            </div>
-          </div>
-          <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
-            <img
-              src={product.images[3].src}
-              alt={product.images[3].alt}
-              className="h-full w-full object-cover object-center"
-            />
-          </div>
-        </div>
-
-        {/* Product info */}
-        <div className="mx-auto max-w-2xl px-4 pb-16 pt-10 sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:grid-rows-[auto,auto,1fr] lg:gap-x-8 lg:px-8 lg:pb-24 lg:pt-16">
-          <div className="lg:col-span-2 lg:border-r lg:border-gray-200 lg:pr-8">
-            <h1 className="text-2xl font-bold tracking-tight text-darker-gray sm:text-4xl">{product.name}</h1>
-          </div>
-
-          {/* Options */}
-          <div className="mt-4 lg:row-span-3 lg:mt-0">
-            <h2 className="sr-only">Product information</h2>
-            <p className="text-3xl tracking-tight text-gray-900">{product.price}</p>
-
-          
-
-            <form className="mt-10">
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to Cart
-              </button>
-            </form>
-          </div>
-
-          <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">
-            {/* Description and details */}
-            <div>
-              <h3 className="sr-only">Description</h3>
-
-              <div className="space-y-6">
-              <h2 className="text-xl font-medium text-gray-900">Details</h2>
-                <p className="text-lg text-gray-900">{product.description}</p>
+              <div className="absolute inset-y-0 left-0 flex items-center">
+                <button
+                  onClick={() =>
+                    handleImageClick(
+                      (selectedImageIndex - 1 + product.images.length) % product.images.length
+                    )
+                  }
+                  className="text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400 p-2 rounded-full bg-gray-800 bg-opacity-50"
+                >
+                  &lt;
+                </button>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center">
+                <button
+                  onClick={() =>
+                    handleImageClick(
+                      (selectedImageIndex + 1) % product.images.length
+                    )
+                  }
+                  className="text-white hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400 p-2 rounded-full bg-gray-800 bg-opacity-50"
+                >
+                  &gt;
+                </button>
               </div>
             </div>
-
+          </div>
+          {/* Product details */}
+          <div className="w-full lg:w-2/3 px-4 lg:px-8 mt-6 lg:mt-0">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-darker-gray sm:text-4xl">
+                {product.productName}
+              </h1>
+              
+              <h2 className="text-xl mt-4 font-medium text-gray-900">Details</h2>
+              <p className="mt-2 text-lg leading-7 text-balance text-gray-900">
+                {product.description}
+              </p>
+              <p className="mt-4 text-3xl tracking-tight text-gray-900">
+              ₹{product.price}
+              </p>
+              <form className="mt-6">
+                <button
+                  type="submit"
+                  className="flex w-1/2 gap-1 items-center justify-center rounded-md border
+                   border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white
+                    hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                 <FaCartArrowDown size={28} /> Add to Cart
+                </button>
+              </form>
+            </div>
             <div className="mt-10">
-              <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
-
-              <div className="mt-4">
-                <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                  {product.highlights.map((highlight) => (
-                    <li key={highlight} className="text-gray-400">
-                      <span className="text-gray-600">{highlight}</span>
+              
+              <div className="mt-6">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Highlights
+                </h3>
+                <ul className="mt-2 text-sm text-gray-600">
+                  {product.highlights?.map((highlight, index) => (
+                    <li key={index} className="mt-1">
+                      {highlight}
                     </li>
                   ))}
                 </ul>
+              </div>
+              <div className="mt-6">
+                <h3 className="text-sm font-medium text-gray-900">
+                  Details
+                </h3>
+                <p className="text-sm text-gray-600">
+                  {product.details}
+                </p>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <RelatedProducts product={product}/>
     </div>
-  )
+  );
 }

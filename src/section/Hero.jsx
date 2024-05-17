@@ -1,10 +1,12 @@
 import React from "react";
+import gallery from "../assets/gallery.mp4"
+import RunningAds from "../components/helpers/RunningAds";
 
 const Hero = () => {
   return (
     <>
       <section className="overflow-hidden pt-20 pb-12 lg:pt-[20px] lg:pb-[90px] bg-white ">
-        <div className="container mx-auto">
+        {/* <div className="container mx-auto">
           <div className="flex flex-wrap items-center justify-between -mx-4">
             <div className="w-full px-4 lg:w-6/12">
               <div className="flex items-center -mx-3 sm:-mx-4">
@@ -63,8 +65,44 @@ const Hero = () => {
               </div>
             </div>
           </div>
+        </div> */}
+
+       <div className="bg-gray-50">
+      
+      <div className="relative w-full h-screen bg-black">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+        >
+          <source src={gallery} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="absolute top-0 left-0 right-0 bottom-0 flex flex-col justify-center items-center bg-opacity-50 bg-gray-800 p-4">
+          <h1 className="text-4xl sm:text-6xl font-bold text-white text-center">
+            Welcome to Our <span className="text-slate-200">Andru-Ecom Store</span>
+          </h1>
+          <p className="mt-2 text-lg sm:text-2xl text-white text-center">
+            Andru-Ecom Makes our customers happy by giving services.
+          </p>
+          <div className="mt-4 flex space-x-4">
+            <button className="bg-transparent border-2 hover:bg-darker-gray-light text-white font-bold py-2 px-4 rounded">
+              Shop Now
+            </button>
+            <button className="bg-darker-gray hover:bg-darker-gray-medium text-white
+             font-bold py-2 px-4 rounded-xl">
+              Learn More
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+    <RunningAds/>
       </section>
+     
     </>
   );
 };
