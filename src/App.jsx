@@ -8,7 +8,8 @@ import SignupPage from './pages/SignupPage';
 import axios from "axios";
 import Verification from './pages/Verification';
 axios.defaults.withCredentials = true;
-axios.defaults.baseURL = "http://localhost:5000/api/v1";
+// axios.defaults.baseURL = "http://localhost:5000/api/v1";
+axios.defaults.baseURL = 'https://ad-backend-1v1z.onrender.com/';
 
 const App = () => {
   return (
